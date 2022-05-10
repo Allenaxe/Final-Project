@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "global.v"
+`include "global.vh"
 module speaker(BTNC, clk, rst_n, audio_mclk, audio_lrck, audio_sck, audio_sdin);
 // I/O declaration
 input BTNC;

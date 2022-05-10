@@ -1,3 +1,13 @@
+//Speaker
+`define DIV_BY_25K 25_000
+`define DIV_BY_25K_BIT_WIDTH 15
+`define DIV_BY_TWO 2'd2
+`define DIV_BY_FOUR 2'd2
+`define DIV_BY_128 7'd64
+`define DIV_BY_TWO_BIT_WIDTH 2
+`define DIV_BY_FOUR_BIT_WIDTH 2
+`define DIV_BY_128_BIT_WIDTH 7
+
 // The width of the screen in pixels
 `define SCREEN_WIDTH_PIXEL 640
 // The height of the screen in pixels

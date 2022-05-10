@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "global.v"
+`include "global.vh"
 module speaker_control(audio_mclk, audio_lrck, audio_sck, audio_sdin, audio_in_left, audio_in_right, rst_n, clk);
 output reg audio_mclk;
 output reg audio_lrck;
