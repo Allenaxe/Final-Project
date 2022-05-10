@@ -49,10 +49,12 @@ module tetris(
     
     // divide necessary clock
     wire clk_25MHz;
+    wire clk_1Hz;
     clk_generator clk_gen(
         .clk_100MHz(clk_100MHz),
         .rst_n(sw_rst_n),
-        .clk_25MHz(clk_25MHz)
+        .clk_25MHz(clk_25MHz),
+        .clk_1Hz(clk_1Hz)
     );
     
     // decode keyboard input to function button
