@@ -149,5 +149,16 @@ module tetris(
         .hsync(vga_hsync),
         .vsync(vga_vsync)
     );
+
+    //Speaker
+    speaker speaker(
+        .BTNC(btn_pause), 
+        .clk(clk_100MHz), 
+        .rst_n(sw_rst_n), 
+        .audio_mclk(audio_mclk), 
+        .audio_lrck(audio_lrck), 
+        .audio_sck(audio_sck), 
+        .audio_sdin(audio_sdin)
+    );
     
 endmodule
