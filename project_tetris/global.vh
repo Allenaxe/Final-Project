@@ -28,12 +28,12 @@
 `define BOARD_HEIGHT_BLK 22
 
 // Width of the game board in pixels
-`define BOARD_WIDTH_PIXEL (`BOARD_WIDE_BLK * `BLOCK_SIZE_PIXEL)
+`define BOARD_WIDTH_PIXEL (`BOARD_WIDTH_BLK * `BLOCK_SIZE_PIXEL)
 // Starting x pixel for the game board
 `define BOARD_X_START_PIXEL (((`SCREEN_WIDTH_PIXEL - `BOARD_WIDTH_PIXEL) / 2) - 1)
 
 // Height of the game board in pixels
-`define BOARD_HEIGHT_PIXEL (`BOARD_HIGH_BLK * `BLOCK_SIZE_PIXEL)
+`define BOARD_HEIGHT_PIXEL (`BOARD_HEIGHT_BLK * `BLOCK_SIZE_PIXEL)
 // Starting y pixel for the game board
 `define BOARD_Y_START_PIXEL (((`SCREEN_HEIGHT_PIXEL - `BOARD_HEIGHT_PIXEL) / 2) - 1)
 

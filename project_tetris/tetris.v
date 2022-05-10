@@ -36,7 +36,7 @@ module tetris(
     output [3:0] vga_green,
     output [3:0] vga_blue,
     output vga_hsync,
-    output vga_vhync,
+    output vga_vsync,
     // ssd output
     output [3:0] ssd_ctrl,
     output [7:0] ssd_disp,
@@ -50,11 +50,13 @@ module tetris(
     // divide necessary clock
     wire clk_25MHz;
     wire clk_1Hz;
+    wire clk_100Hz;
     clk_generator clk_gen(
         .clk_100MHz(clk_100MHz),
         .rst_n(sw_rst_n),
         .clk_25MHz(clk_25MHz),
-        .clk_1Hz(clk_1Hz)
+        .clk_1Hz(clk_1Hz),
+        .clk_100Hz(clk_100Hz)
     );
     
     // decode keyboard input to function button
@@ -78,14 +80,14 @@ module tetris(
     // debounce button input
     wire pause;
     debounce db_btn_pause (
-        .clk(clk_100MHz),
+        .clk(clk_100Hz),
         .rst_n(sw_rst_n),
         .pb_in(btn_pause),
         .pb_debounced(pause)
     );
     wire restart;
     debounce db_btn_restart (
-        .clk(clk_100MHz),
+        .clk(clk_100Hz),
         .rst_n(sw_rst_n),
         .pb_in(btn_restart),
         .pb_debounced(restart)
@@ -131,6 +133,21 @@ module tetris(
         .blk_4(ctrl_blk_4),
         .width(ctrl_width),
         .height(ctrl_height)
+    );
+    
+    vga vga(
+        .clk(clk_25MHz),
+        .ctrl_blk(ctrl_blk),
+        .ctrl_blk_1(ctrl_blk_1),
+        .ctrl_blk_2(ctrl_blk_2),
+        .ctrl_blk_3(ctrl_blk_3),
+        .ctrl_blk_4(ctrl_blk_4),
+        .stacked_block(stacked_block),
+        .red(vga_red),
+        .green(vga_green),
+        .blue(vga_blue),
+        .hsync(vga_hsync),
+        .vsync(vga_vsync)
     );
     
 endmodule
