@@ -29,10 +29,10 @@ module clk_generator(
     
     reg clk_25MHz_count;
     always @(posedge clk_100MHz or negedge rst_n)
-        if(rst_n) 
+        if(~rst_n) 
             {clk_25MHz, clk_25MHz_count} <= 2'd0;
         else 
-            {clk_25MHz, clk_25MHz_count} <= {clk_25MHz, clk_count} + 2'd1;
+            {clk_25MHz, clk_25MHz_count} <= {clk_25MHz, clk_25MHz_count} + 2'd1;
     
     reg [25:0] clk_1Hz_count;
     reg [25:0] clk_1Hz_count_next;
@@ -50,7 +50,7 @@ module clk_generator(
             end
     
     always @(posedge clk_100MHz or negedge rst_n)
-        if (rst_n) 
+        if (~rst_n) 
             begin
             clk_1Hz_count <= 26'd0;
             clk_1Hz <= 1'b0;

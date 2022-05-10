@@ -120,6 +120,17 @@ module tetris(
     wire [`BITS_BLK_SIZE-1:0] ctrl_width;
     wire [`BITS_BLK_SIZE-1:0] ctrl_height;
     
-    
+    ctrl_block ctrl_block(
+        .block(ctrl_blk),
+        .pos_x(ctrl_pos_x),
+        .pos_y(ctrl_pos_y),
+        .rot(ctrl_rot),
+        .blk_1(ctrl_blk_1),
+        .blk_2(ctrl_blk_2),
+        .blk_3(ctrl_blk_3),
+        .blk_4(ctrl_blk_4),
+        .width(ctrl_width),
+        .height(ctrl_height)
+    );
     
 endmodule

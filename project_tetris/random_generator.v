@@ -27,7 +27,7 @@ module random_generator(
     );
     
     always @(posedge clk or negedge rst_n)
-        if(rst_n) 
+        if(~rst_n) 
             random <= 3'b111;
         else 
             begin

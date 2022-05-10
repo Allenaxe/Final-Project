@@ -38,7 +38,7 @@
 `define BOARD_Y_START_PIXEL (((`SCREEN_HEIGHT_PIXEL - `BOARD_HEIGHT_PIXEL) / 2) - 1)
 
 // The number of bits used to store a block position
-`define BITS_BLK_POS 9
+`define BITS_BLK_POS 8
 // The number of bits used to store an X position
 `define BITS_X_POS 4
 // The number of bits used to store a Y position
@@ -53,7 +53,7 @@
 `define BITS_PER_BLOCK 3
 
 // The type of each block
-`define BLOCK_ERR 3'b000
+`define BLOCK_EMPTY 3'b000
 `define BLOCK_I 3'b001
 `define BLOCK_O 3'b010
 `define BLOCK_T 3'b011
@@ -75,7 +75,7 @@
 `define ORANGE 12'b1111_1000_0000
 
 // Error value. {pos_x[3:0], pos_y[4:0]}
-`define ERR_BLK_POS 9'b1111_11111
+`define ERR_BLK_POS 8'b1111_1111
 
 // Modes
 `define BITS_MODE 3

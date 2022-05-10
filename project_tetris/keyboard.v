@@ -25,11 +25,11 @@ module keyboard(
     input rst_n,
     inout PS2_DATA,
     inout PS2_CLK,
-    output left_btn,
-    output right_btn,
-    output down_btn,
-    output rotate_btn,
-    output drop_btn
+    output reg left_btn,
+    output reg right_btn,
+    output reg down_btn,
+    output reg rotate_btn,
+    output reg drop_btn
     );
     
     wire [511:0] key_down;
