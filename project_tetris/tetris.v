@@ -93,14 +93,6 @@ module tetris(
         .pb_debounced(restart)
     );
     
-    // generator random block (3'b001 ~ 3'b111)
-    wire [`BITS_PER_BLOCK-1:0] random_block;
-    random_generator block_gen(
-        .clk(clk_100MHz),
-        .rst_n(sw_rst_n),
-        .random(random_block)
-    );
-    
     // store the positions that stacked blocks exist
     // the top left position is stacked_block[0]
     // the bottom right position is stacked_block[(`BOARD_WIDTH_BLK * `BOARD_HEIGHT_BLK)-1]
@@ -180,60 +172,69 @@ module tetris(
         .fall_en(fall_en)
     );
     
-    wire [`BITS_X_POS-1:0] test_pos_x;
-    wire [`BITS_Y_POS-1:0] test_pos_y;
-    wire [`BITS_ROT-1:0] test_rot;
-    // Combinational logic to determine what position/rotation we are testing.
-    // This has been hoisted out into a module so that the code is shorter.
-    test_block_pos test_block_pos (
-        .mode(mode),
+    wire [`BITS_X_POS-1:0] drop_pos_x;
+    wire [`BITS_Y_POS-1:0] drop_pos_y;
+    wire [`BITS_ROT-1:0] drop_rot;
+    wire [`BITS_BLK_POS-1:0] drop_blk_1;
+    wire [`BITS_BLK_POS-1:0] drop_blk_2;
+    wire [`BITS_BLK_POS-1:0] drop_blk_3;
+    wire [`BITS_BLK_POS-1:0] drop_blk_4;
+    wire [`BITS_BLK_SIZE-1:0] drop_width;
+    wire [`BITS_BLK_SIZE-1:0] drop_height;
+    
+    drop_block drop_block(
+        .clk(clk_100MHz),
+        .rst_n(rst_n),
         .fall_reset(fall_reset),
+        .stacked_block(stacked_block),
+        .ctrl_blk(ctrl_blk),
+        .ctrl_pos_x(ctrl_pos_x),
+        .ctrl_pos_y(ctrl_pos_y),
+        .ctrl_rot(ctrl_rot),
+        .ctrl_height(ctrl_height),
+        .drop_pos_x(drop_pos_x),
+        .drop_pos_y(drop_pos_y),
+        .drop_rot(drop_rot),
+        .drop_blk_1(drop_blk_1),
+        .drop_blk_2(drop_blk_2),
+        .drop_blk_3(drop_blk_3),
+        .drop_blk_4(drop_blk_4),
+        .drop_width(drop_width),
+        .drop_height(drop_height)
+    );
+    
+    wire [(`BOARD_WIDTH_BLK * `BOARD_HEIGHT_BLK)-1:0] stacked_block_temp;
+    wire [`BITS_PER_BLOCK-1:0] next_blk;
+    wire [`BITS_X_POS-1:0] next_pos_x;
+    wire [`BITS_Y_POS-1:0] next_pos_y;
+    wire [`BITS_ROT-1:0] next_rot;
+    reg game_start;
+    
+    next_block next_block(
+        .clk(clk_100MHz),
+        .rst_n(rst_n),
+        .stacked_block(stacked_block),
         .fall_en(fall_en),
         .left_en(left_en),
         .right_en(right_en),
         .rotate_en(rotate_en),
         .down_en(down_en),
         .drop_en(drop_en),
+        .game_start(game_start),
+        .ctrl_blk(ctrl_blk),
         .ctrl_pos_x(ctrl_pos_x),
         .ctrl_pos_y(ctrl_pos_y),
         .ctrl_rot(ctrl_rot),
-        .test_pos_x(test_pos_x),
-        .test_pos_y(test_pos_y),
-        .test_rot(test_rot)
+        .drop_blk_1(drop_blk_1),
+        .drop_blk_2(drop_blk_2),
+        .drop_blk_3(drop_blk_3),
+        .drop_blk_4(drop_blk_4),
+        .stacked_block_next(stacked_block_temp),
+        .next_blk(next_blk),
+        .next_pos_x(next_pos_x),
+        .next_pos_y(next_pos_y),
+        .next_rot(next_rot),
+        .fall_reset(fall_reset)
     );
-    
-    wire [`BITS_BLK_POS-1:0] test_blk_1;
-    wire [`BITS_BLK_POS-1:0] test_blk_2;
-    wire [`BITS_BLK_POS-1:0] test_blk_3;
-    wire [`BITS_BLK_POS-1:0] test_blk_4;
-    wire [`BITS_BLK_SIZE-1:0] test_width;
-    wire [`BITS_BLK_SIZE-1:0] test_height;
-    
-    block_size test_block(
-        .block(ctrl_blk),
-        .pos_x(test_pos_x),
-        .pos_y(test_pos_y),
-        .rot(test_rot),
-        .blk_1(test_blk_1),
-        .blk_2(test_blk_2),
-        .blk_3(test_blk_3),
-        .blk_4(test_blk_4),
-        .width(test_width),
-        .height(test_height)
-    );
-    
-    // checks whether test block positions intersect
-    // with any fallen pieces.
-    wire test_overlap;
-    assign test_overlap = stacked_block[test_blk_1] || stacked_block[test_blk_2] || 
-        stacked_block[test_blk_3] || stacked_block[test_blk_4];
-    
-    // checks whether control block positions intersect
-    // with any fallen pieces.
-    wire ctrl_overlap;
-    assign ctrl_overlap = stacked_block[ctrl_blk_1] || stacked_block[ctrl_blk_2] || 
-        stacked_block[ctrl_blk_3] || stacked_block[ctrl_blk_4];
-    
-    
     
 endmodule

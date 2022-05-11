@@ -18,10 +18,9 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
+`include "global.vh"
 
 module test_block_pos(
-    input [`BITS_MODE-1:0] mode,
     input fall_en,
     input fall_reset,
     input left_en,
@@ -38,68 +37,46 @@ module test_block_pos(
     );
     
     always @* 
-        if (mode == `MODE_PLAY)
-            if (fall_en) 
-                begin
-                test_pos_x = ctrl_pos_x;
-                test_pos_y = ctrl_pos_y + 1; // move down
-                test_rot = ctrl_rot;
-                end 
-            else if (left_en) 
-                begin
-                test_pos_x = ctrl_pos_x - 1; // move left
-                test_pos_y = ctrl_pos_y;
-                test_rot = ctrl_rot;
-                end 
-            else if (right_en) 
-                begin
-                test_pos_x = ctrl_pos_x + 1; // move right
-                test_pos_y = ctrl_pos_y;
-                test_rot = ctrl_rot;
-                end 
-            else if (rotate_en) 
-                begin
-                test_pos_x = ctrl_pos_x;
-                test_pos_y = ctrl_pos_y;
-                test_rot = ctrl_rot + 1; // rotate
-                end 
-            else if (down_en) 
-                begin
-                test_pos_x = ctrl_pos_x;
-                test_pos_y = ctrl_pos_y + 1; // move down
-                test_rot = ctrl_rot;
-                end 
-            else if (drop_en) 
-                begin
-                // do nothing, we set to drop mode
-                test_pos_x = ctrl_pos_x;
-                test_pos_y = ctrl_pos_y;
-                test_rot = ctrl_rot;
-                end 
-            else 
-                begin
-                // do nothing, the block isn't moving this cycle
-                test_pos_x = ctrl_pos_x;
-                test_pos_y = ctrl_pos_y;
-                test_rot = ctrl_rot;
-                end
-        else if (mode == `MODE_DROP)
-            if (fall_reset) 
-                begin
-                // do nothing, we set to play mode
-                test_pos_x = ctrl_pos_x;
-                test_pos_y = ctrl_pos_y;
-                test_rot = ctrl_rot;
-                end 
-            else 
-                begin
-                test_pos_x = ctrl_pos_x;
-                test_pos_y = ctrl_pos_y + 1; // move down
-                test_rot = ctrl_rot;
-                end
+        if (fall_en) 
+            begin
+            test_pos_x = ctrl_pos_x;
+            test_pos_y = ctrl_pos_y + 1; // move down
+            test_rot = ctrl_rot;
+            end 
+        else if (left_en) 
+            begin
+            test_pos_x = ctrl_pos_x - 1; // move left
+            test_pos_y = ctrl_pos_y;
+            test_rot = ctrl_rot;
+            end 
+        else if (right_en) 
+            begin
+            test_pos_x = ctrl_pos_x + 1; // move right
+            test_pos_y = ctrl_pos_y;
+            test_rot = ctrl_rot;
+            end 
+        else if (rotate_en) 
+            begin
+            test_pos_x = ctrl_pos_x;
+            test_pos_y = ctrl_pos_y;
+            test_rot = ctrl_rot + 1; // rotate
+            end 
+        else if (down_en) 
+            begin
+            test_pos_x = ctrl_pos_x;
+            test_pos_y = ctrl_pos_y + 1; // move down
+            test_rot = ctrl_rot;
+            end 
+        else if (drop_en) 
+            begin
+            // do nothing, we set to drop mode
+            test_pos_x = ctrl_pos_x;
+            test_pos_y = ctrl_pos_y;
+            test_rot = ctrl_rot;
+            end 
         else 
             begin
-            // Other mode, do nothing
+            // do nothing, the block isn't moving this cycle
             test_pos_x = ctrl_pos_x;
             test_pos_y = ctrl_pos_y;
             test_rot = ctrl_rot;
