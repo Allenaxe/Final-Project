@@ -37,11 +37,10 @@ reg stop_next, stop;
 
 wire clk_2k;
 wire [`SSD_NUM-1:0] ssd_in;
-wire start_debounced, start;
+wire start;
 wire clk_25MHz, clk_1Hz;
 
-push_debounce U1(.push_debounced(start_debounced), .push(BTNC), .rst_n(rst_n), .clk(clk));
-one_pulse O0(.push_onepulse(start), .clk(clk), .rst_n(rst_n), .push_debounced(start_debounced));
+one_pulse O0(.push_onepulse(start), .clk(clk), .rst_n(rst_n), .push_debounced(BTNC));
 
 always@(counter)
     case(counter)
