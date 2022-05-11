@@ -184,7 +184,7 @@ module tetris(
     
     drop_block drop_block(
         .clk(clk_100MHz),
-        .rst_n(rst_n),
+        .rst_n(sw_rst_n),
         .fall_reset(fall_reset),
         .stacked_block(stacked_block),
         .ctrl_blk(ctrl_blk),
@@ -212,7 +212,7 @@ module tetris(
     
     next_block next_block(
         .clk(clk_100MHz),
-        .rst_n(rst_n),
+        .rst_n(sw_rst_n),
         .stacked_block(stacked_block),
         .fall_en(fall_en),
         .left_en(left_en),
@@ -236,5 +236,16 @@ module tetris(
         .next_rot(next_rot),
         .fall_reset(fall_reset)
     );
+    
+    wire [(`BOARD_WIDTH_BLK * `BOARD_HEIGHT_BLK)-1:0] stacked_block_next;
+    wire get_score;
+    complete_row complete_row(
+        .clk(clk_100MHz),
+        .rst_n(sw_rst_n),
+        .stacked_block(stacked_block_temp),
+        .stacked_block_next(stacked_block_next),
+        .get_score(get_score)
+    );
+    
     
 endmodule

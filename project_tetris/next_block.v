@@ -24,7 +24,6 @@ module next_block(
     input clk,
     input rst_n,
     input fall_en,
-    input fall_reset,
     input left_en,
     input right_en,
     input down_en,
@@ -97,12 +96,7 @@ module next_block(
         .width(test_width),
         .height(test_height)
     );
-    
-    initial
-        begin
-        stacked_block_next = stacked_block;
-        end
-    
+
     // checks whether test block positions intersect
     // with any fallen pieces.
     wire test_overlap;
