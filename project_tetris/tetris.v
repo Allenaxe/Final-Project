@@ -122,7 +122,7 @@ module tetris(
     wire [`BITS_BLK_SIZE-1:0] ctrl_width;
     wire [`BITS_BLK_SIZE-1:0] ctrl_height;
     
-    ctrl_block ctrl_block(
+    block_size ctrl_block(
         .block(ctrl_blk),
         .pos_x(ctrl_pos_x),
         .pos_y(ctrl_pos_y),
@@ -201,6 +201,39 @@ module tetris(
         .test_pos_y(test_pos_y),
         .test_rot(test_rot)
     );
+    
+    wire [`BITS_BLK_POS-1:0] test_blk_1;
+    wire [`BITS_BLK_POS-1:0] test_blk_2;
+    wire [`BITS_BLK_POS-1:0] test_blk_3;
+    wire [`BITS_BLK_POS-1:0] test_blk_4;
+    wire [`BITS_BLK_SIZE-1:0] test_width;
+    wire [`BITS_BLK_SIZE-1:0] test_height;
+    
+    block_size test_block(
+        .block(ctrl_blk),
+        .pos_x(test_pos_x),
+        .pos_y(test_pos_y),
+        .rot(test_rot),
+        .blk_1(test_blk_1),
+        .blk_2(test_blk_2),
+        .blk_3(test_blk_3),
+        .blk_4(test_blk_4),
+        .width(test_width),
+        .height(test_height)
+    );
+    
+    // checks whether test block positions intersect
+    // with any fallen pieces.
+    wire test_overlap;
+    assign test_overlap = stacked_block[test_blk_1] || stacked_block[test_blk_2] || 
+        stacked_block[test_blk_3] || stacked_block[test_blk_4];
+    
+    // checks whether control block positions intersect
+    // with any fallen pieces.
+    wire ctrl_overlap;
+    assign ctrl_overlap = stacked_block[ctrl_blk_1] || stacked_block[ctrl_blk_2] || 
+        stacked_block[ctrl_blk_3] || stacked_block[ctrl_blk_4];
+    
     
     
 endmodule

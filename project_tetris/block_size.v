@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2022/05/10 23:10:32
+// Create Date: 2022/05/11 20:48:06
 // Design Name: 
-// Module Name: ctrl_block
+// Module Name: block_size
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 `include "global.vh"
 
-module ctrl_block(
+module block_size(
     input [`BITS_PER_BLOCK-1:0] block,
     input [`BITS_X_POS-1:0] pos_x,
     input [`BITS_Y_POS-1:0] pos_y,
