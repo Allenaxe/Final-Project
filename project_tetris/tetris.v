@@ -60,21 +60,21 @@ module tetris(
     );
     
     // decode keyboard input to function button
-    wire left;
-    wire right;
-    wire down;
-    wire rotate;
-    wire drop;
+    wire left_en;
+    wire right_en;
+    wire down_en;
+    wire rotate_en;
+    wire drop_en;
     keyboard keyboard(
         .clk(clk_100MHz),
         .rst_n(sw_rst_n),
         .PS2_CLK(key_PS2_CLK),
         .PS2_DATA(key_PS2_DATA),
-        .left_btn(left),
-        .right_btn(right),
-        .down_btn(down),
-        .rotate_btn(rotate),
-        .drop_btn(drop)
+        .left_btn(left_en),
+        .right_btn(right_en),
+        .down_btn(down_en),
+        .rotate_btn(rotate_en),
+        .drop_btn(drop_en)
     );
     
     // debounce button input
@@ -160,5 +160,47 @@ module tetris(
         .audio_sck(audio_sck), 
         .audio_sdin(audio_sdin)
     );
+    
+    // The mode, used for finite state machine things. We also
+    // need to store the old mode occasionally, like when we're paused.
+    reg [`BITS_MODE-1:0] mode;
+    reg [`BITS_MODE-1:0] last_mode;
+    // The game clock
+    wire fall_en;
+    // The game clock reset
+    reg fall_reset;
+    reg [1:0] fall_speed;
+    
+    block_fall block_fall(
+        .clk_100MHz(clk_100MHz),
+        .rst_n(sw_rst_n),
+        .fall_speed(fall_speed),
+        .pause(mode != `MODE_PLAY),
+        .reset(fall_reset),
+        .fall_en(fall_en)
+    );
+    
+    wire [`BITS_X_POS-1:0] test_pos_x;
+    wire [`BITS_Y_POS-1:0] test_pos_y;
+    wire [`BITS_ROT-1:0] test_rot;
+    // Combinational logic to determine what position/rotation we are testing.
+    // This has been hoisted out into a module so that the code is shorter.
+    test_block_pos test_block_pos (
+        .mode(mode),
+        .fall_reset(fall_reset),
+        .fall_en(fall_en),
+        .left_en(left_en),
+        .right_en(right_en),
+        .rotate_en(rotate_en),
+        .down_en(down_en),
+        .drop_en(drop_en),
+        .ctrl_pos_x(ctrl_pos_x),
+        .ctrl_pos_y(ctrl_pos_y),
+        .ctrl_rot(ctrl_rot),
+        .test_pos_x(test_pos_x),
+        .test_pos_y(test_pos_y),
+        .test_rot(test_rot)
+    );
+    
     
 endmodule

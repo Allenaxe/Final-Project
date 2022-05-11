@@ -81,13 +81,13 @@ module clk_generator(
     always @(posedge clk_100MHz or negedge rst_n)
         if (~rst_n) 
             begin
-            clk_1Hz_count <= 26'd0;
-            clk_1Hz <= 1'b0;
+            clk_100Hz_count <= 26'd0;
+            clk_100Hz <= 1'b0;
             end
         else 
             begin
-            clk_1Hz_count <= clk_1Hz_count_next;
-            clk_1Hz <= clk_1Hz_next;
+            clk_100Hz_count <= clk_1Hz_count_next;
+            clk_100Hz <= clk_1Hz_next;
             end
 
 endmodule

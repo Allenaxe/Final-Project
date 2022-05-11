@@ -35,8 +35,6 @@ reg [21:0] note_div_right;
 reg [8:0] counter, counter_temp;
 reg stop_next, stop;
 
-wire clk_2k;
-wire [`SSD_NUM-1:0] ssd_in;
 wire start;
 wire clk_25MHz, clk_1Hz;
 
@@ -1501,7 +1499,7 @@ end
 
 always@(posedge clk or negedge rst_n)
 begin
-    if(~rst_n) stop <= `ENABLED;
+    if(~rst_n) stop <= 1'b1;
     else stop <= stop_next;
 end
 

@@ -97,3 +97,8 @@
 
 // The maximum value of the drop timer
 `define DROP_TIMER_MAX 10000
+
+// fall speed
+`define SPEED_SLOW 0
+`define SPEED_NORMAL 1
+`define SPEED_FAST 2
