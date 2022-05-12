@@ -145,6 +145,8 @@ module tetris(
     );
 
     //Speaker
+    wire [15:0] volume_max, volume_min;
+    
     speaker speaker(
         .mode(mode),
         .clk(clk_100MHz), 
@@ -159,8 +161,6 @@ module tetris(
 
     //volume control
 
-    wire [15:0] volume_max, volume_min;
-    wire [3:0] volume;
     volume_ctl volume_ctl(
         .clk(clk_100MHz),
         .rst_n(sw_rst_n),

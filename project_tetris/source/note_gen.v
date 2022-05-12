@@ -28,7 +28,7 @@ module note_gen(
     note_div_left, // div for note generation
     note_div_right, 
     audio_left, // left sound audio 
-    audio_right, // right sound audio
+    audio_right // right sound audio
 );
 
 input clk; // clock from crystal
@@ -44,7 +44,7 @@ output [15:0] audio_right; // right sound audio
 reg [21:0] clk_cnt_left_next, clk_cnt_left, clk_cnt_right_next, clk_cnt_right;
 reg b_clk_left, b_clk_left_next, b_clk_right, b_clk_right_next; // Note frequency generation
 
-always @(posedge clk or negedge rst_n) 
+always @(posedge clk or negedge rst_n)
 if (~rst_n) begin 
 clk_cnt_left <= 22'd0; 
 b_clk_left <= 1'b0; 

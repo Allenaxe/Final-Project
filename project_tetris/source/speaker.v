@@ -1487,7 +1487,7 @@ always@(counter)
         end
     endcase
 
-always@(counter)
+always@(counter or stop or mode)
 begin
     stop_next = stop;
     if(mode != `MODE_PLAY) stop_next = 1'b1;
@@ -1534,7 +1534,7 @@ speaker_control Usc (
 );
 
 //clock_generator
-clk_generator clk(
+clk_generator clk_0(
     .clk_100MHz(clk),
     .rst_n(rst_n),
     .clk_25MHz(clk_25MHz),
