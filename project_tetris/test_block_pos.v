@@ -22,7 +22,6 @@
 
 module test_block_pos(
     input fall_en,
-    input fall_reset,
     input left_en,
     input right_en,
     input down_en,

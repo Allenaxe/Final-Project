@@ -86,8 +86,8 @@ module clk_generator(
             end
         else 
             begin
-            clk_100Hz_count <= clk_1Hz_count_next;
-            clk_100Hz <= clk_1Hz_next;
+            clk_100Hz_count <= clk_100Hz_count_next;
+            clk_100Hz <= clk_100Hz_next;
             end
 
 endmodule

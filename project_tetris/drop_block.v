@@ -23,16 +23,21 @@
 module drop_block(
     input clk,
     input rst_n,
-    input fall_reset,
+    input fall_en,
+    input left_en,
+    input right_en,
+    input down_en,
+    input rotate_en,
+    input drop_en,
     input [(`BOARD_WIDTH_BLK * `BOARD_HEIGHT_BLK)-1:0] stacked_block,
     input [`BITS_PER_BLOCK-1:0] ctrl_blk,
     input [`BITS_X_POS-1:0] ctrl_pos_x,
     input [`BITS_Y_POS-1:0] ctrl_pos_y,
     input [`BITS_ROT-1:0] ctrl_rot,
     input [`BITS_BLK_SIZE-1:0] ctrl_height,
-    output reg [`BITS_X_POS-1:0] drop_pos_x,
-    output reg [`BITS_Y_POS-1:0] drop_pos_y,
-    output reg [`BITS_ROT-1:0] drop_rot,
+    output [`BITS_X_POS-1:0] drop_pos_x,
+    output [`BITS_Y_POS-1:0] drop_pos_y,
+    output [`BITS_ROT-1:0] drop_rot,
     output [`BITS_BLK_POS-1:0] drop_blk_1,
     output [`BITS_BLK_POS-1:0] drop_blk_2,
     output [`BITS_BLK_POS-1:0] drop_blk_3,
@@ -56,16 +61,16 @@ module drop_block(
     );
     
     wire drop_overlap;
-    assign drop_overlap = stacked_block[drop_blk_1] || stacked_block[drop_blk_2] || 
-        stacked_block[drop_blk_3] || stacked_block[drop_blk_4];
+    assign drop_overlap = stacked_block[drop_blk_1 + `BOARD_WIDTH_BLK] || stacked_block[drop_blk_2 + `BOARD_WIDTH_BLK] || 
+        stacked_block[drop_blk_3 + `BOARD_WIDTH_BLK] || stacked_block[drop_blk_4 + `BOARD_WIDTH_BLK];
     
     always @(posedge clk or negedge rst_n)
         if(~rst_n) 
             counter <= 0;
         else 
-            if (fall_reset)
+            if (fall_en || left_en || right_en || rotate_en || down_en || drop_en)
                 counter <= 0;
-            else if (ctrl_pos_y + ctrl_height - 1 + counter < `BOARD_HEIGHT_BLK && !drop_overlap)
+            else if (drop_pos_y + drop_height <= `BOARD_HEIGHT_BLK - 1 && !drop_overlap)
                 counter <= counter + 1;
             else
                 counter <= counter;

@@ -22,10 +22,10 @@
 `define VSYNC_BACK_PORCH 33
 
 // keyboard
-`define KEY_UP 9'h175
-`define KEY_DOWN 9'h172
-`define KEY_LEFT 9'h16B
-`define KEY_RIGHT 9'h174
+`define KEY_UP 9'h1D
+`define KEY_DOWN 9'h1B
+`define KEY_LEFT 9'h1C
+`define KEY_RIGHT 9'h23
 `define KEY_SPACE 9'h29
 
 // How many pixels wide/high each block is
@@ -83,17 +83,16 @@
 `define RED 12'b1111_0000_0000
 `define BLUE 12'b0000_0000_1111
 `define ORANGE 12'b1111_1000_0000
+`define DARK_GRAY 12'b0111_0111_0111
 
-// Error value. {pos_x[3:0], pos_y[4:0]}
+// Error value. 
 `define ERR_BLK_POS 8'b1111_1111
 
 // Modes
-`define BITS_MODE 3
-`define MODE_PLAY 0
-`define MODE_DROP 1
+`define BITS_MODE 2
+`define MODE_IDLE 0
+`define MODE_PLAY 1
 `define MODE_PAUSE 2
-`define MODE_IDLE 3
-`define MODE_SHIFT 4
 
 // The maximum value of the drop timer
 `define DROP_TIMER_MAX 10000

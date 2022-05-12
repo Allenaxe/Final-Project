@@ -21,20 +21,22 @@
 `include "global.vh"
 
 module next_block(
-    input clk,
-    input rst_n,
     input fall_en,
     input left_en,
     input right_en,
     input down_en,
     input rotate_en,
     input drop_en,
-    input game_start,
     input [(`BOARD_WIDTH_BLK * `BOARD_HEIGHT_BLK)-1:0] stacked_block,
+    input [`BITS_PER_BLOCK-1:0] random_blk,
     input [`BITS_PER_BLOCK-1:0] ctrl_blk,
     input [`BITS_X_POS-1:0] ctrl_pos_x,
     input [`BITS_Y_POS-1:0] ctrl_pos_y,
     input [`BITS_ROT-1:0] ctrl_rot,
+    input [`BITS_BLK_POS-1:0] ctrl_blk_1,
+    input [`BITS_BLK_POS-1:0] ctrl_blk_2,
+    input [`BITS_BLK_POS-1:0] ctrl_blk_3,
+    input [`BITS_BLK_POS-1:0] ctrl_blk_4,
     input [`BITS_BLK_POS-1:0] drop_blk_1,
     input [`BITS_BLK_POS-1:0] drop_blk_2,
     input [`BITS_BLK_POS-1:0] drop_blk_3,
@@ -47,22 +49,12 @@ module next_block(
     output reg fall_reset
     );
     
-    // generator random block (3'b001 ~ 3'b111)
-    wire [`BITS_PER_BLOCK-1:0] random_blk;
-    random_generator block_gen(
-        .clk(clk),
-        .rst_n(rst_n),
-        .random(random_blk)
-    );
-    
     wire [`BITS_X_POS-1:0] test_pos_x;
     wire [`BITS_Y_POS-1:0] test_pos_y;
     wire [`BITS_ROT-1:0] test_rot;
     // Combinational logic to determine what position/rotation we are testing.
     // This has been hoisted out into a module so that the code is shorter.
     test_block_pos test_block_pos (
-        .mode(mode),
-        .fall_reset(fall_reset),
         .fall_en(fall_en),
         .left_en(left_en),
         .right_en(right_en),
@@ -125,7 +117,7 @@ module next_block(
                 stacked_block_next[ctrl_blk_4] = 1;
                 // get a new block
                 next_blk = random_blk;
-                next_pos_x = (`BOARD_HEIGHT_BLK / 2) - 1;
+                next_pos_x = (`BOARD_WIDTH_BLK / 2) - 1;
                 next_pos_y = 0;
                 next_rot = 0;
                 // reset the game timer so the user has a full
@@ -133,7 +125,7 @@ module next_block(
                 fall_reset = 1;
                 end
         else if (left_en)
-            if (test_pos_x >= 0 && !test_overlap) 
+            if (ctrl_pos_x > 0 && !test_overlap) 
                 // move left
                 begin
                 next_blk = ctrl_blk;
@@ -199,7 +191,7 @@ module next_block(
             stacked_block_next[drop_blk_4] = 1;
             // get a new block
             next_blk = random_blk;
-            next_pos_x = (`BOARD_HEIGHT_BLK / 2) - 1;
+            next_pos_x = (`BOARD_WIDTH_BLK / 2) - 1;
             next_pos_y = 0;
             next_rot = 0;
             // reset the game timer so the user has a full

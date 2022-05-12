@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2022/05/10 21:50:45
+// Create Date: 2022/05/12 09:59:13
 // Design Name: 
-// Module Name: random_generator
+// Module Name: freq_div
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,22 +20,19 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module random_generator(
-    input clk,
+module freq_div(
+input clk,
     input rst_n,
-    output reg [2:0] random
+    output reg clk_out
     );
+    reg [14:0] q;
+    reg [15:0] q_next;
     
+     always @*
+        q_next = {clk_out, q} + 1'b1;
     always @(posedge clk or negedge rst_n)
-        if(~rst_n) 
-            random <= 3'b001;
-        else 
-            begin
-            if (random == 7)
-                random = 1;
-            else
-                random = random + 1;
-            end
+        if(~rst_n) {clk_out, q} <=16'd0;
+        else {clk_out, q} <= q_next;
     
     
 endmodule

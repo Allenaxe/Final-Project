@@ -27,6 +27,10 @@ module vga(
     input [`BITS_BLK_POS-1:0] ctrl_blk_2,
     input [`BITS_BLK_POS-1:0] ctrl_blk_3,
     input [`BITS_BLK_POS-1:0] ctrl_blk_4,
+    input [`BITS_BLK_POS-1:0] drop_blk_1,
+    input [`BITS_BLK_POS-1:0] drop_blk_2,
+    input [`BITS_BLK_POS-1:0] drop_blk_3,
+    input [`BITS_BLK_POS-1:0] drop_blk_4,
     input [(`BOARD_WIDTH_BLK * `BOARD_HEIGHT_BLK)-1:0] stacked_block,
     output reg [3:0] red,
     output reg [3:0] green,
@@ -73,6 +77,9 @@ module vga(
                         `BLOCK_J: {red, green, blue} = `BLUE;
                         `BLOCK_L: {red, green, blue} = `ORANGE;
                     endcase
+                else if (ctrl_blk_index == drop_blk_1 || ctrl_blk_index == drop_blk_2 ||
+                    ctrl_blk_index == drop_blk_3 || ctrl_blk_index == drop_blk_4)
+                    {red, green, blue} = `DARK_GRAY;
                 else
                     {red, green, blue} = stacked_block[ctrl_blk_index] ? `WHITE : `GRAY;
         else 
