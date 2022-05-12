@@ -178,12 +178,20 @@ module tetris(
     wire fall_en;
     // The game clock reset
     wire fall_reset;
-    // reg [1:0] fall_speed;
+    reg [1:0] fall_speed, fall_speed_next;
     
+    always@(score0 or score1 or score2 or score3)
+    if(score0 == 4'b0000 && score1 == 4'b0001 && score2 == 4'b0000 && score3 == 4'b0000) fall_speed_next = `SPEED_FAST;
+    else fall_speed_next = fall_speed;
+
+    always@(posedge clk or negedge sw_rst_n)
+    if(~sw_rst_n) fall_speed <= `SPPED_NORMAL;
+    else fall_speed <= fall_speed_next;
+
     block_fall block_fall(
         .clk_100MHz(clk_100MHz),
         .rst_n(sw_rst_n),
-        .fall_speed(`SPEED_NORMAL),
+        .fall_speed(fall_speed),
         .pause(mode != `MODE_PLAY),
         .reset(fall_reset & game_start),
         .fall_en(fall_en)
