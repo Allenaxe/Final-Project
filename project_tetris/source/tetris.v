@@ -47,8 +47,8 @@ module tetris(
     output audio_sck,
     output audio_sdin,
     // led
-    output reg [1:0] mode
     output [3:0] volume,
+    output reg [1:0] mode
     );
     
     // divide necessary clock
