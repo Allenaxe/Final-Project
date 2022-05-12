@@ -185,7 +185,7 @@ module tetris(
     else if(score0 == 4'b0000 && score1 == 4'b0000 && score2 == 4'b0111 && score3 == 4'b0000) fall_speed_next = `SPEED_FAST;
     else fall_speed_next = fall_speed;
 
-    always@(posedge clk or negedge sw_rst_n)
+    always@(posedge clk_100MHz or negedge sw_rst_n)
     if(~sw_rst_n) fall_speed <= `SPEED_SLOW;
     else fall_speed <= fall_speed_next;
 
