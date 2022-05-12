@@ -20,11 +20,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "global.vh"
-module speaker(BTNC, clk, rst_n, audio_mclk, audio_lrck, audio_sck, audio_sdin);
+module speaker(mode, clk, rst_n, volume_max, volume_min, audio_mclk, audio_lrck, audio_sck, audio_sdin);
 // I/O declaration
-input BTNC;
+input [1:0] mode;
 input clk; // clock from the crystal
 input rst_n; // active low reset
+input [15:0] volume_max;
+input [15:0] volume_min;
 output audio_mclk; // master clock
 output audio_lrck; // left-right clock
 output audio_sck; // serial clock
@@ -35,10 +37,7 @@ reg [21:0] note_div_right;
 reg [8:0] counter, counter_temp;
 reg stop_next, stop;
 
-wire start;
 wire clk_25MHz, clk_1Hz;
-
-one_pulse O0(.push_onepulse(start), .clk(clk), .rst_n(rst_n), .push_debounced(BTNC));
 
 always@(counter)
     case(counter)
@@ -1491,7 +1490,7 @@ always@(counter)
 always@(counter)
 begin
     stop_next = stop;
-    if(start) stop_next = ~stop;
+    if(mode != `MODE_PLAY) stop_next = 1'b1;
     if(stop) counter_temp = 9'b111111111;
     else if(counter == 9'b101101000) counter_temp = 9'b0;
     else counter_temp = counter + 1'b1;
@@ -1511,23 +1510,27 @@ end
 
 // Declare internal nodes
 wire [15:0] audio_in_left, audio_in_right; // Note generation
-note_gen Ung (.clk(clk), // clock from crystal 
-.rst_n(rst_n), // active low reset 
-.note_div_left(note_div_left), // div for note generation
-.note_div_right(note_div_right),
-.audio_left(audio_in_left), // left sound audio 
-.audio_right(audio_in_right) // right sound audio
+note_gen Ung (
+    .clk(clk), // clock from crystal 
+    .rst_n(rst_n), // active low reset 
+    .volume_max(volume_max),
+    .volume_min(volume_min),
+    .note_div_left(note_div_left), // div for note generation
+    .note_div_right(note_div_right),
+    .audio_left(audio_in_left), // left sound audio 
+    .audio_right(audio_in_right) // right sound audio
 );
 
 // Speaker controllor
-speaker_control Usc ( .clk(clk), // clock from the crystal 
-.rst_n(rst_n), // active low reset 
-.audio_in_left(audio_in_left), // left channel audio data input 
-.audio_in_right(audio_in_right), // right channel audio data input
-.audio_mclk(audio_mclk), // master clock 
-.audio_lrck(audio_lrck), // left-right clock 
-.audio_sck(audio_sck), // serial clock 
-.audio_sdin(audio_sdin) // serial audio data input
+speaker_control Usc ( 
+    .clk(clk), // clock from the crystal 
+    .rst_n(rst_n), // active low reset 
+    .audio_in_left(audio_in_left), // left channel audio data input 
+    .audio_in_right(audio_in_right), // right channel audio data input
+    .audio_mclk(audio_mclk), // master clock 
+    .audio_lrck(audio_lrck), // left-right clock 
+    .audio_sck(audio_sck), // serial clock 
+    .audio_sdin(audio_sdin) // serial audio data input
 );
 
 //clock_generator

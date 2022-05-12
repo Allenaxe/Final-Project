@@ -20,16 +20,21 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module note_gen( clk, // clock from crystal 
-rst_n, // active low reset 
-note_div_left, // div for note generation
-note_div_right, 
-audio_left, // left sound audio 
-audio_right, // right sound audio
+module note_gen( 
+    clk, // clock from crystal 
+    rst_n, // active low reset
+    volume_max,
+    volume_min, 
+    note_div_left, // div for note generation
+    note_div_right, 
+    audio_left, // left sound audio 
+    audio_right, // right sound audio
 );
 
 input clk; // clock from crystal
 input rst_n; // active low reset
+input [15:0] volume_max;
+input [15:0] volume_min;
 input [21:0] note_div_left; // div for note generation
 input [21:0] note_div_right; // div for note generation
 output [15:0] audio_left; // left sound audio
@@ -76,7 +81,7 @@ b_clk_right_next = b_clk_right;
 end 
 
 // Assign the amplitude of the note
-assign audio_left = (b_clk_left == 1'b0) ? 16'hB000 : 16'h5FFF;
-assign audio_right = (b_clk_right == 1'b0) ? 16'hB000 : 16'h5FFF;
+assign audio_left = (b_clk_left == 1'b0) ? volume_min : volume_max;
+assign audio_right = (b_clk_right == 1'b0) ? volume_min : volume_max;
 
 endmodule

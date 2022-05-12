@@ -23,9 +23,6 @@
 module volume_ctl(
     input clk,
     input rst_n,
-    input Do,
-    input Re,
-    input Mi,
     input up,
     input down,
     output reg [15:0] volume_max,

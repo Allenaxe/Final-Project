@@ -27,6 +27,8 @@ module tetris(
     input sw_rst_n,
     // button input
     input btn_pause,
+    input btn_volume_up,
+    input btn_volume_down;
     // keyboard inout
     inout key_PS2_DATA,
     inout key_PS2_CLK,
@@ -40,6 +42,7 @@ module tetris(
     output [3:0] ssd_ctrl,
     output [7:0] ssd_disp,
     // speaker output
+    output [3:0] volume;
     output audio_mclk,
     output audio_lrck,
     output audio_sck,
@@ -51,13 +54,11 @@ module tetris(
     // divide necessary clock
     wire clk_25MHz;
     wire clk_1Hz;
-    wire clk_100Hz;
     clk_generator clk_gen(
         .clk_100MHz(clk_100MHz),
         .rst_n(sw_rst_n),
         .clk_25MHz(clk_25MHz),
         .clk_1Hz(clk_1Hz),
-        .clk_100Hz(clk_100Hz)
     );
     
     // decode keyboard input to function button
@@ -81,8 +82,9 @@ module tetris(
     // debounce button input
     wire pause;
     
-    
     one_pulse O0(.push_onepulse(pause), .clk(clk_100MHz), .rst_n(sw_rst_n), .push_debounced(btn_pause));
+    one_pulse O1(.push_onepulse(up), .clk(clk_100MHz), .rst_n(sw_rst_n), .push_debounced(btn_volume_up));
+    one_pulse O2(.push_onepulse(down), .clk(clk_100MHz), .rst_n(sw_rst_n), .push_debounced(btn_volume_down));
     
     // store the positions that stacked blocks exist
     // the top left position is stacked_block[0]
@@ -144,13 +146,29 @@ module tetris(
 
     //Speaker
     speaker speaker(
-        .BTNC(btn_pause), 
+        .state(mode),
         .clk(clk_100MHz), 
-        .rst_n(sw_rst_n), 
+        .rst_n(sw_rst_n),
+        .volume_max(volume_max),
+        .volume_min(volume_min),
         .audio_mclk(audio_mclk), 
         .audio_lrck(audio_lrck), 
         .audio_sck(audio_sck), 
         .audio_sdin(audio_sdin)
+    );
+
+    //volume control
+
+    wire [15:0] volume_max, volume_min;
+    wire [3:0] volume;
+    volume_ctl volume_ctl(
+        .clk(clk_100MHz),
+        .rst_n(sw_rst_n),
+        .up(up),
+        .down(down),
+        .volume_max(volume_max),
+        .volume_min(volume_min),
+        .volume(volume)
     );
     
     wire game_start;
