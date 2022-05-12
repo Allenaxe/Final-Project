@@ -28,7 +28,7 @@ module tetris(
     // button input
     input btn_pause,
     input btn_volume_up,
-    input btn_volume_down;
+    input btn_volume_down,
     // keyboard inout
     inout key_PS2_DATA,
     inout key_PS2_CLK,
@@ -42,7 +42,7 @@ module tetris(
     output [3:0] ssd_ctrl,
     output [7:0] ssd_disp,
     // speaker output
-    output [3:0] volume;
+    output [3:0] volume,
     output audio_mclk,
     output audio_lrck,
     output audio_sck,
@@ -58,7 +58,7 @@ module tetris(
         .clk_100MHz(clk_100MHz),
         .rst_n(sw_rst_n),
         .clk_25MHz(clk_25MHz),
-        .clk_1Hz(clk_1Hz),
+        .clk_1Hz(clk_1Hz)
     );
     
     // decode keyboard input to function button
@@ -186,7 +186,7 @@ module tetris(
     else fall_speed_next = fall_speed;
 
     always@(posedge clk or negedge sw_rst_n)
-    if(~sw_rst_n) fall_speed <= `SPPED_SLOW;
+    if(~sw_rst_n) fall_speed <= `SPEED_SLOW;
     else fall_speed <= fall_speed_next;
 
     block_fall block_fall(
