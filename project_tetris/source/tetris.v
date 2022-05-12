@@ -42,13 +42,13 @@ module tetris(
     output [3:0] ssd_ctrl,
     output [7:0] ssd_disp,
     // speaker output
-    output [3:0] volume,
     output audio_mclk,
     output audio_lrck,
     output audio_sck,
     output audio_sdin,
     // led
     output reg [1:0] mode
+    output [3:0] volume,
     );
     
     // divide necessary clock
