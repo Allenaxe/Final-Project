@@ -146,7 +146,7 @@ module tetris(
 
     //Speaker
     speaker speaker(
-        .state(mode),
+        .mode(mode),
         .clk(clk_100MHz), 
         .rst_n(sw_rst_n),
         .volume_max(volume_max),
