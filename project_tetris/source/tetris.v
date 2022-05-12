@@ -181,11 +181,12 @@ module tetris(
     reg [1:0] fall_speed, fall_speed_next;
     
     always@(score0 or score1 or score2 or score3)
-    if(score0 == 4'b0000 && score1 == 4'b0001 && score2 == 4'b0000 && score3 == 4'b0000) fall_speed_next = `SPEED_FAST;
+    if(score0 == 4'b0000 && score1 == 4'b0000 && score2 == 4'b0001 && score3 == 4'b0000) fall_speed_next = `SPEED_NORMAL;
+    else if(score0 == 4'b0000 && score1 == 4'b0000 && score2 == 4'b0111 && score3 == 4'b0000) fall_speed_next = `SPEED_FAST;
     else fall_speed_next = fall_speed;
 
     always@(posedge clk or negedge sw_rst_n)
-    if(~sw_rst_n) fall_speed <= `SPPED_NORMAL;
+    if(~sw_rst_n) fall_speed <= `SPPED_SLOW;
     else fall_speed <= fall_speed_next;
 
     block_fall block_fall(
