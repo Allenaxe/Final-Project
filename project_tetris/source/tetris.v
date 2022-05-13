@@ -54,11 +54,13 @@ module tetris(
     // divide necessary clock
     wire clk_25MHz;
     wire clk_1Hz;
+    wire clk_100Hz;
     clk_generator clk_gen(
         .clk_100MHz(clk_100MHz),
         .rst_n(sw_rst_n),
         .clk_25MHz(clk_25MHz),
-        .clk_1Hz(clk_1Hz)
+        .clk_1Hz(clk_1Hz),
+        .clk_100Hz(clk_100Hz)
     );
     
     // decode keyboard input to function button
@@ -146,7 +148,7 @@ module tetris(
 
     //Speaker
     wire [15:0] volume_max, volume_min;
-    
+
     speaker speaker(
         .mode(mode),
         .clk(clk_100MHz), 

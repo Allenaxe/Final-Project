@@ -1502,7 +1502,7 @@ begin
     else stop <= stop_next;
 end
 
-always@(posedge clk_1Hz or negedge rst_n)
+always@(posedge clk_100Hz or negedge rst_n)
 begin
     if(~rst_n) counter <= 9'b111111111;
     else counter <= counter_temp;
