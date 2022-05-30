@@ -37,7 +37,7 @@ reg [21:0] note_div_right;
 reg [8:0] counter, counter_temp;
 reg stop_next, stop;
 
-wire clk_25MHz, clk_1Hz;
+wire clk_25MHz, clk_1Hz, clk_10Hz;
 
 always@(counter)
     case(counter)
@@ -1538,7 +1538,8 @@ clk_generator clk_0(
     .clk_100MHz(clk),
     .rst_n(rst_n),
     .clk_25MHz(clk_25MHz),
-    .clk_1Hz(clk_1Hz)
+    .clk_1Hz(clk_1Hz),
+    .clk_100Hz(clk_100Hz)
     );
 
 endmodule

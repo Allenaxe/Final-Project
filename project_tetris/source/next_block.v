@@ -94,18 +94,22 @@ module next_block(
     wire test_overlap;
     assign test_overlap = stacked_block[test_blk_1] || stacked_block[test_blk_2] || 
         stacked_block[test_blk_3] || stacked_block[test_blk_4];
+    
+    wire test1_overlap;
+    assign test1_overlap = stacked_block[ctrl_blk_1 + `BOARD_WIDTH_BLK] || stacked_block[ctrl_blk_2 + `BOARD_WIDTH_BLK] || 
+        stacked_block[ctrl_blk_3 + `BOARD_WIDTH_BLK] || stacked_block[ctrl_blk_4 + `BOARD_WIDTH_BLK];
    
     always @*
         begin
         stacked_block_next = stacked_block;
         if (fall_en || down_en)
-            if (test_pos_y + test_height - 1 < `BOARD_HEIGHT_BLK && !test_overlap) 
+            if (ctrl_pos_y + test_height < `BOARD_HEIGHT_BLK && !test1_overlap) 
                 // move down
                 begin
                 next_blk = ctrl_blk;
-                next_pos_x = test_pos_x;
-                next_pos_y = test_pos_y;
-                next_rot = test_rot;
+                next_pos_x = ctrl_pos_x;
+                next_pos_y = ctrl_pos_y + 1;
+                next_rot = ctrl_rot;
                 fall_reset = 0;
                 end 
             else 
@@ -129,9 +133,9 @@ module next_block(
                 // move left
                 begin
                 next_blk = ctrl_blk;
-                next_pos_x = test_pos_x;
-                next_pos_y = test_pos_y;
-                next_rot = test_rot;
+                next_pos_x = ctrl_pos_x - 1;
+                next_pos_y = ctrl_pos_y;
+                next_rot = ctrl_rot;
                 fall_reset = 0;
                 end 
             else 
@@ -144,13 +148,13 @@ module next_block(
                 fall_reset = 0;
                 end
         else if (right_en)
-            if (test_pos_x + test_width - 1 < `BOARD_WIDTH_BLK && !test_overlap) 
+            if (ctrl_pos_x + test_width < `BOARD_WIDTH_BLK && !test_overlap) 
                 // move right
                 begin
                 next_blk = ctrl_blk;
-                next_pos_x = test_pos_x;
-                next_pos_y = test_pos_y;
-                next_rot = test_rot;
+                next_pos_x = ctrl_pos_x + 1;
+                next_pos_y = ctrl_pos_y;
+                next_rot = ctrl_rot;
                 fall_reset = 0;
                 end 
             else 
@@ -163,14 +167,14 @@ module next_block(
                 fall_reset = 0;
                 end
         else if (rotate_en)
-            if ((test_pos_x + test_width - 1 < `BOARD_WIDTH_BLK)  && 
-                (test_pos_y + test_height - 1 < `BOARD_HEIGHT_BLK) && !test_overlap) 
+            if ((ctrl_pos_x + test_width - 1 < `BOARD_WIDTH_BLK)  && 
+                (ctrl_pos_y + test_height - 1 < `BOARD_HEIGHT_BLK) && !test_overlap) 
                 // rotate
                 begin
                 next_blk = ctrl_blk;
-                next_pos_x = test_pos_x;
-                next_pos_y = test_pos_y;
-                next_rot = test_rot;
+                next_pos_x = ctrl_pos_x;
+                next_pos_y = ctrl_pos_y;
+                next_rot = ctrl_rot + 1;
                 fall_reset = 0;
                 end 
             else 

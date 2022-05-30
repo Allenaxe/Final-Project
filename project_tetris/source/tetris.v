@@ -194,7 +194,7 @@ module tetris(
     block_fall block_fall(
         .clk_100MHz(clk_100MHz),
         .rst_n(sw_rst_n),
-        .fall_speed(fall_speed),
+        .fall_speed(`SPEED_SLOW),
         .pause(mode != `MODE_PLAY),
         .reset(fall_reset & game_start),
         .fall_en(fall_en)
@@ -395,7 +395,7 @@ module tetris(
                         ctrl_pos_x <= ctrl_pos_x;
                         ctrl_pos_y <= ctrl_pos_y;
                         ctrl_rot <= ctrl_rot;
-                        stacked_block <= stacked_block_next;
+                        stacked_block <= stacked_block;
                         end
                 default:
                     begin

@@ -36,7 +36,7 @@ module test_block_pos(
     );
     
     always @* 
-        if (fall_en) 
+        if (fall_en || down_en) 
             begin
             test_pos_x = ctrl_pos_x;
             test_pos_y = ctrl_pos_y + 1; // move down
@@ -59,12 +59,6 @@ module test_block_pos(
             test_pos_x = ctrl_pos_x;
             test_pos_y = ctrl_pos_y;
             test_rot = ctrl_rot + 1; // rotate
-            end 
-        else if (down_en) 
-            begin
-            test_pos_x = ctrl_pos_x;
-            test_pos_y = ctrl_pos_y + 1; // move down
-            test_rot = ctrl_rot;
             end 
         else if (drop_en) 
             begin
