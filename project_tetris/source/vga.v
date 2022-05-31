@@ -79,7 +79,7 @@ module vga(
                     endcase
                 else if (ctrl_blk_index == drop_blk_1 || ctrl_blk_index == drop_blk_2 ||
                     ctrl_blk_index == drop_blk_3 || ctrl_blk_index == drop_blk_4)
-                    {red, green, blue} = `DARK_GRAY;
+                    {red, green, blue} = `BLACK;
                 else
                     {red, green, blue} = stacked_block[ctrl_blk_index] ? `WHITE : `GRAY;
         else 
