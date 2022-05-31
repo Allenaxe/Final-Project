@@ -48,19 +48,19 @@ module keyboard(
     always @*
         if (key_valid)
             begin
-            if (key_down[`KEY_UP]) 
+            if (key_down[`KEY_UP] || key_down[`KEY_W]) 
                 rotate_btn = 1'b1;
             else 
                 rotate_btn = 1'b0;
-            if (key_down[`KEY_DOWN])
+            if (key_down[`KEY_DOWN] || key_down[`KEY_S])
                 down_btn = 1'b1;
             else
                 down_btn = 1'b0;
-            if (key_down[`KEY_LEFT])
+            if (key_down[`KEY_LEFT] || key_down[`KEY_A])
                 left_btn = 1'b1;
             else
                 left_btn = 1'b0;
-            if (key_down[`KEY_RIGHT])
+            if (key_down[`KEY_RIGHT] || key_down[`KEY_D])
                 right_btn = 1'b1;
             else
                 right_btn = 1'b0;

@@ -1525,8 +1525,8 @@ note_gen Ung (
 speaker_control Usc ( 
     .clk(clk_100MHz), // clock from the crystal 
     .rst_n(rst_n), // active low reset 
-    .audio_in_left(audio_in_left), // left channel audio data input 
-    .audio_in_right(audio_in_right), // right channel audio data input
+    .audio_left(audio_in_left), // left channel audio data input 
+    .audio_right(audio_in_right), // right channel audio data input
     .audio_mclk(audio_mclk), // master clock 
     .audio_lrck(audio_lrck), // left-right clock 
     .audio_sck(audio_sck), // serial clock 

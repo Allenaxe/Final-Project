@@ -20,141 +20,101 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "global.vh"
-module speaker_control(audio_mclk, audio_lrck, audio_sck, audio_sdin, audio_in_left, audio_in_right, rst_n, clk);
-output reg audio_mclk;
-output reg audio_lrck;
-output reg audio_sck;
-output wire audio_sdin;
+module speaker_control(audio_mclk, audio_lrck, audio_sck, audio_sdin, audio_left, audio_right, rst_n, clk);
+output audio_mclk;
+output audio_lrck;
+output audio_sck;
+output reg audio_sdin;
 input rst_n;
 input clk;
-input [15:0] audio_in_left;
-input [15:0] audio_in_right;
+input [15:0] audio_left;
+input [15:0] audio_right;
 
-reg [`DIV_BY_TWO_BIT_WIDTH-1:0] count_2, count_2_next;
-reg audio_mclk_next;
-reg [`DIV_BY_FOUR_BIT_WIDTH-1:0] count_4, count_4_next;
-reg audio_sck_next;
-reg [`DIV_BY_128_BIT_WIDTH-1:0] count_128, count_128_next;
-reg audio_lrck_next;
-reg [31:0] shifter;
-reg [31:0] shifter_temp;
-reg [5:0] counter;
-reg [5:0] counter_temp;
-
-// *******************
-// Clock divider for 25M Hz
-// *******************
-// Clock Divider: Counter operation
-
-always @*
-  if (count_2 == `DIV_BY_TWO-1)
-  begin
-    count_2_next = `DIV_BY_TWO_BIT_WIDTH'd0;
-    audio_mclk_next = ~audio_mclk;
-  end
-  else
-  begin
-    count_2_next = count_2 + 1'b1;
-    audio_mclk_next = audio_mclk;
-  end
-
-// Counter flip-flops
-always @(posedge clk or negedge rst_n)
-  if (~rst_n)
-  begin
-    count_2 <=`DIV_BY_TWO_BIT_WIDTH'b0;
-    audio_mclk <= 1'b0;
-  end
-  else
-  begin
-    count_2 <= count_2_next;
-    audio_mclk <= audio_mclk_next;
-  end
-  
-// *********************
-// Clock divider for 25/128M Hz
-// *********************
-// Clock Divider: Counter operation 
-always @*
-  if (count_128 == `DIV_BY_128 - 1'b1)
-  begin
-    count_128_next = `DIV_BY_128_BIT_WIDTH'd0;
-    audio_lrck_next = ~audio_lrck;
-  end
-  else
-  begin
-    count_128_next = count_128 + 1'b1;
-    audio_lrck_next = audio_lrck;
-  end
-
-
-// Counter flip-flops
-always @(posedge audio_mclk or negedge rst_n)
-  if (~rst_n)
-  begin
-    count_128 <=`DIV_BY_128_BIT_WIDTH'b0;
-    audio_lrck <=1'b0;
-  end
-  else
-  begin
-    count_128 <= count_128_next;
-    audio_lrck <= audio_lrck_next;
-  end
-
-// *********************
-// Clock divider for 6.25 Hz
-// *********************
-// Clock Divider: Counter operation 
-always @*
-  if (count_4 == `DIV_BY_FOUR-1)
-  begin
-    count_4_next = `DIV_BY_FOUR_BIT_WIDTH'd0;
-    audio_sck_next = ~audio_sck;
-  end
-  else
-  begin
-    count_4_next = count_4 + 1'b1;
-    audio_sck_next = audio_sck;
-  end
-
-
-// Counter flip-flops
-always @(posedge audio_mclk or negedge rst_n)
-  if (~rst_n)
-  begin
-    count_4 <=`DIV_BY_FOUR_BIT_WIDTH'b0;
-    audio_sck <=1'b0;
-  end
-  else
-  begin
-    count_4 <= count_4_next;
-    audio_sck <= audio_sck_next;
-  end
-
-always@(posedge audio_sck or negedge rst_n)
-    if(~rst_n)
-       counter <= 6'b011110;
-    else
-       counter <= counter_temp; 
-
-always@(counter)
-    if(counter == 6'b011111)
-       begin
-       counter_temp = 6'b0;
-       shifter_temp = {audio_in_left, audio_in_right};
-       end
-    else
-       begin
-       counter_temp = counter + 1'b1;
-       shifter_temp = shifter;
-       end
-
-always@(posedge audio_sck or negedge rst_n)
-    if(~rst_n)
-       shifter <= 31'h0;
-    else
-       shifter <= {shifter_temp[30:0], 1'h0}; 
-       
-assign audio_sdin = shifter[31];
-
+reg  [8:0] q;
+    reg [8:0] q_next;
+    reg [15:0] audio_left_saved;
+    reg [15:0] audio_right_saved;
+    reg [4:0] cnt;
+    reg [4:0] cnt_next;
+    reg audio_sdin_next;
+    
+    always @*
+        q_next = q + 9'd1;
+    
+    always @(posedge clk or negedge rst_n)
+        if(~rst_n) 
+            q <= 9'd0;
+        else 
+            q <= q_next;
+            
+    assign audio_mclk = q[1];
+    assign audio_lrck = q[8];
+    assign audio_sck = q[3];
+    
+    always @(negedge audio_lrck or negedge rst_n)
+        if(~rst_n) 
+            begin
+            audio_left_saved <= 16'd0;
+            audio_right_saved <= 16'd0;
+            end
+        else 
+            begin
+            audio_left_saved <= audio_left;
+            audio_right_saved <= audio_right;
+            end
+    
+    always @*
+        cnt_next = cnt + 5'd1;
+    
+    always @(negedge audio_sck or negedge rst_n)
+        if(~rst_n) 
+            cnt <= 5'd0;
+        else 
+            cnt <= cnt_next;
+            
+    always@* 
+        case(cnt)
+            5'd0: audio_sdin_next = audio_left_saved[15];
+            5'd1: audio_sdin_next = audio_left_saved[14];
+            5'd2: audio_sdin_next = audio_left_saved[13];
+            5'd3: audio_sdin_next = audio_left_saved[12];
+            5'd4: audio_sdin_next = audio_left_saved[11];
+            5'd5: audio_sdin_next = audio_left_saved[10];
+            5'd6: audio_sdin_next = audio_left_saved[9];
+            5'd7: audio_sdin_next = audio_left_saved[8];
+            5'd8: audio_sdin_next = audio_left_saved[7];
+            5'd9: audio_sdin_next = audio_left_saved[6];
+            5'd10: audio_sdin_next = audio_left_saved[5];
+            5'd11: audio_sdin_next = audio_left_saved[4];
+            5'd12: audio_sdin_next = audio_left_saved[3];
+            5'd13: audio_sdin_next = audio_left_saved[2];
+            5'd14: audio_sdin_next = audio_left_saved[1];
+            5'd15: audio_sdin_next = audio_left_saved[0];
+            5'd16: audio_sdin_next = audio_right_saved[15];
+            5'd17: audio_sdin_next = audio_right_saved[14];
+            5'd18: audio_sdin_next = audio_right_saved[13];
+            5'd19: audio_sdin_next = audio_right_saved[12];
+            5'd20: audio_sdin_next = audio_right_saved[11];
+            5'd21: audio_sdin_next = audio_right_saved[10];
+            5'd22: audio_sdin_next = audio_right_saved[9];
+            5'd23: audio_sdin_next = audio_right_saved[8];
+            5'd24: audio_sdin_next = audio_right_saved[7];
+            5'd25: audio_sdin_next = audio_right_saved[6];
+            5'd26: audio_sdin_next = audio_right_saved[5];
+            5'd27: audio_sdin_next = audio_right_saved[4];
+            5'd28: audio_sdin_next = audio_right_saved[3];
+            5'd29: audio_sdin_next = audio_right_saved[2];
+            5'd30: audio_sdin_next = audio_right_saved[1];
+            5'd31: audio_sdin_next = audio_right_saved[0];
+            default: audio_sdin_next = 1'b0;
+        endcase
+    
+    always @(negedge audio_sck or negedge rst_n)
+        if(~rst_n) 
+            audio_sdin <= 1'd0;
+        else 
+            audio_sdin <= audio_sdin_next;
+    
+    
 endmodule
+

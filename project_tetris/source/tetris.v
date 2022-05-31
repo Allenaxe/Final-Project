@@ -183,19 +183,29 @@ module tetris(
     wire fall_reset;
     reg [1:0] fall_speed, fall_speed_next;
     
-    always@(score0 or score1 or score2 or score3)
-    if(score0 == 4'b0000 && score1 == 4'b0000 && score2 == 4'b0001 && score3 == 4'b0000) fall_speed_next = `SPEED_NORMAL;
-    else if(score0 == 4'b0000 && score1 == 4'b0000 && score2 == 4'b0111 && score3 == 4'b0000) fall_speed_next = `SPEED_FAST;
-    else fall_speed_next = fall_speed;
+    wire [3:0] score0;
+    wire [3:0] score1;
+    wire [3:0] score2;
+    wire [3:0] score3;
+    
+    always @*
+        case ({score0, score1, score2, score3})
+            {4'd0, 4'd0, 4'd0, 4'd0}: fall_speed_next = `SPEED_SLOW;
+            {4'd0, 4'd0, 4'd2, 4'd0}: fall_speed_next = `SPEED_NORMAL;
+            {4'd0, 4'd0, 4'd6, 4'd0}: fall_speed_next = `SPEED_FAST;
+            default: fall_speed_next = fall_speed;
+        endcase
 
     always@(posedge clk_100MHz or negedge sw_rst_n)
-    if(~sw_rst_n) fall_speed <= `SPEED_SLOW;
-    else fall_speed <= fall_speed_next;
+    if(~sw_rst_n) 
+        fall_speed <= `SPEED_SLOW;
+    else 
+        fall_speed <= fall_speed_next;
 
     block_fall block_fall(
         .clk_100MHz(clk_100MHz),
         .rst_n(sw_rst_n),
-        .fall_speed(`SPEED_SLOW),
+        .fall_speed(fall_speed),
         .pause(mode != `MODE_PLAY),
         .reset(fall_reset & game_start),
         .fall_en(fall_en)
@@ -285,11 +295,7 @@ module tetris(
         .get_score(get_score)
     );
     
-    wire [3:0] score0;
-    wire [3:0] score1;
-    wire [3:0] score2;
-    wire [3:0] score3;
-    reg reset;
+    
     score_control score_control(
         .clk(clk_100MHz),
         .rst_n(sw_rst_n),
