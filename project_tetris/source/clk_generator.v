@@ -25,7 +25,7 @@ module clk_generator(
     input rst_n,
     output reg clk_25MHz,
     output reg clk_1Hz,
-    output reg clk_100Hz
+    output reg clk_bkHz
     );
     
     reg clk_25MHz_count;
@@ -61,33 +61,31 @@ module clk_generator(
             clk_1Hz_count <= clk_1Hz_count_next;
             clk_1Hz <= clk_1Hz_next;
             end
-    
-    
-    reg [18:0] clk_100Hz_count;
-    reg [18:0] clk_100Hz_count_next;
-    reg clk_100Hz_next;
+
+    reg [22:0] clk_bkHz_count;
+    reg [22:0] clk_bkHz_count_next;
+    reg clk_bkHz_next;
     always @*
-        if (clk_100Hz_count == 19'd499_999) 
+        if (clk_bkHz_count == 23'd6249999) 
             begin
-            clk_100Hz_count_next = 19'd0;
-            clk_100Hz_next = ~clk_100Hz;
+            clk_bkHz_count_next = 23'd0;
+            clk_bkHz_next = ~clk_bkHz;
             end
         else 
             begin
-            clk_100Hz_count_next = clk_100Hz_count + 1'b1;
-            clk_100Hz_next = clk_100Hz;
+            clk_bkHz_count_next = clk_bkHz_count + 1'b1;
+            clk_bkHz_next = clk_bkHz;
             end
     
     always @(posedge clk_100MHz or negedge rst_n)
         if (~rst_n) 
             begin
-            clk_100Hz_count <= 26'd0;
-            clk_100Hz <= 1'b0;
+            clk_bkHz_count <= 23'd0;
+            clk_bkHz <= 1'b0;
             end
         else 
             begin
-            clk_100Hz_count <= clk_100Hz_count_next;
-            clk_100Hz <= clk_100Hz_next;
+            clk_bkHz_count <= clk_bkHz_count_next;
+            clk_bkHz <= clk_bkHz_next;
             end
-
 endmodule

@@ -20,10 +20,11 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "global.vh"
-module speaker(mode, clk, rst_n, volume_max, volume_min, audio_mclk, audio_lrck, audio_sck, audio_sdin);
+module speaker(mode, clk_100MHz, clk_bkHz, rst_n, volume_max, volume_min, audio_mclk, audio_lrck, audio_sck, audio_sdin);
 // I/O declaration
 input [1:0] mode;
-input clk; // clock from the crystal
+input clk_100MHz; // clock from the crystal
+input clk_bkHz;
 input rst_n; // active low reset
 input [15:0] volume_max;
 input [15:0] volume_min;
@@ -36,8 +37,6 @@ reg [21:0] note_div_left;
 reg [21:0] note_div_right;
 reg [8:0] counter, counter_temp;
 reg stop_next, stop;
-
-wire clk_25MHz, clk_1Hz, clk_10Hz;
 
 always@(counter)
     case(counter)
@@ -1491,18 +1490,19 @@ always@(counter or stop or mode)
 begin
     stop_next = stop;
     if(mode != `MODE_PLAY) stop_next = 1'b1;
+    else stop_next = 1'b0;
     if(stop) counter_temp = 9'b111111111;
     else if(counter == 9'b101101000) counter_temp = 9'b0;
     else counter_temp = counter + 1'b1;
 end
 
-always@(posedge clk or negedge rst_n)
+always@(posedge clk_100MHz or negedge rst_n)
 begin
     if(~rst_n) stop <= 1'b1;
     else stop <= stop_next;
 end
 
-always@(posedge clk_100Hz or negedge rst_n)
+always@(posedge clk_bkHz or negedge rst_n)
 begin
     if(~rst_n) counter <= 9'b111111111;
     else counter <= counter_temp;
@@ -1511,7 +1511,7 @@ end
 // Declare internal nodes
 wire [15:0] audio_in_left, audio_in_right; // Note generation
 note_gen Ung (
-    .clk(clk), // clock from crystal 
+    .clk(clk_100MHz), // clock from crystal 
     .rst_n(rst_n), // active low reset 
     .volume_max(volume_max),
     .volume_min(volume_min),
@@ -1523,7 +1523,7 @@ note_gen Ung (
 
 // Speaker controllor
 speaker_control Usc ( 
-    .clk(clk), // clock from the crystal 
+    .clk(clk_100MHz), // clock from the crystal 
     .rst_n(rst_n), // active low reset 
     .audio_in_left(audio_in_left), // left channel audio data input 
     .audio_in_right(audio_in_right), // right channel audio data input
@@ -1532,15 +1532,6 @@ speaker_control Usc (
     .audio_sck(audio_sck), // serial clock 
     .audio_sdin(audio_sdin) // serial audio data input
 );
-
-//clock_generator
-clk_generator clk_0(
-    .clk_100MHz(clk),
-    .rst_n(rst_n),
-    .clk_25MHz(clk_25MHz),
-    .clk_1Hz(clk_1Hz),
-    .clk_100Hz(clk_100Hz)
-    );
 
 endmodule
 
