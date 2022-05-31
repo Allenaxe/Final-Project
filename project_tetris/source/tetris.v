@@ -151,6 +151,7 @@ module tetris(
 
     speaker speaker(
         .mode(mode),
+        .clk_100MHz(clk_100MHz),
         .clk_bkHz(clk_bkHz),
         .rst_n(sw_rst_n),
         .volume_max(volume_max),
