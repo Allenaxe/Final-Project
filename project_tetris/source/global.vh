@@ -22,9 +22,9 @@
 `define VSYNC_BACK_PORCH 33
 
 // keyboard
-`define KEY_UP 9'h175
-`define KEY_DOWN 9'h172
-`define KEY_LEFT 9'h16B
+`define KEY_UP 9'h75
+`define KEY_DOWN 9'h72
+`define KEY_LEFT 9'h6B
 `define KEY_RIGHT 9'h174
 `define KEY_W 9'h1D
 `define KEY_A 9'h1C
