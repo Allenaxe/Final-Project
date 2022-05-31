@@ -22,10 +22,10 @@
 `define VSYNC_BACK_PORCH 33
 
 // keyboard
-`define KEY_UP 9'h1D
-`define KEY_DOWN 9'h1B
-`define KEY_LEFT 9'h1C
-`define KEY_RIGHT 9'h23
+`define KEY_UP 9'h175
+`define KEY_DOWN 9'h172
+`define KEY_LEFT 9'h16B
+`define KEY_RIGHT 9'h174
 `define KEY_SPACE 9'h29
 
 // How many pixels wide/high each block is
