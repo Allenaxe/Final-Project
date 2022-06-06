@@ -68,7 +68,7 @@ module block_fall(
                                 fall_en <= 0;
                                 end
                         `SPEED_FAST:
-                            if (counter == 27'd12_499_999) 
+                            if (counter == 27'd25_999_999) 
                                 begin
                                 counter <= 0;
                                 fall_en <= 1;

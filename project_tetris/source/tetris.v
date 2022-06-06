@@ -189,7 +189,7 @@ module tetris(
     wire [3:0] score3;
     
     always @*
-        case ({score0, score1, score2, score3})
+        case ({score3, score2, score1, score0})
             {4'd0, 4'd0, 4'd0, 4'd0}: fall_speed_next = `SPEED_SLOW;
             {4'd0, 4'd0, 4'd2, 4'd0}: fall_speed_next = `SPEED_NORMAL;
             {4'd0, 4'd0, 4'd6, 4'd0}: fall_speed_next = `SPEED_FAST;
